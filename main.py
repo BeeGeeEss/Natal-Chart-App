@@ -5,6 +5,7 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
 
 """
 import sys
+from datetime import datetime
 from colorama import init, Fore
 from pyfiglet import Figlet
 from kerykeion import AstrologicalSubject, KerykeionChartSVG, Report
@@ -54,23 +55,26 @@ def main():
         print(Fore.MAGENTA + "\n\nWARNING! Your information may be shared with 3rd parties")
         print(Fore.MAGENTA + "\nWelcome, let's begin...\n")
 
-        name = get_input("Enter your name or alias: ").title()
-        birthdate = get_input("Enter your birthdate (YYYY-MM-DD): ")
-        birthtime = get_input("Enter your birthtime (HH:MM 24 hour time): ")
-        latitude = float(get_input("Enter the latitude (e.g. -37.813629): "))
-        longitude = float(get_input("Enter the longitude (e.g. 144.963058): "))
-        country_capital_city = get_input("Enter your timezone (Country/Capital City: ")
-        city_region = get_input("Enter your birth town or city: ")
+        while True:
+            try:
+                name = get_input("Enter your name or alias: ").title()
+                birthdate = get_input("Enter your birthdate (YYYY-MM-DD): ")
+                birthtime = get_input("Enter your birthtime (HH:MM 24 hour time): ")
+                latitude = float(get_input("Enter the latitude (e.g. -37.813629): "))
+                longitude = float(get_input("Enter the longitude (e.g. 144.963058): "))
+                country_capital_city = get_input("Enter your timezone (Country/Capital City: ")
+                city_region = get_input("Enter your birth town/Country: ")
 
-        try:
-            year, month, day = map(int, birthdate.split("-"))
-            hour, minute = map(int, birthtime.split(":"))
-            country, city_region = country_capital_city.split("/")
-        except KeyboardInterrupt:
-            print(Fore.RED + "App interrupted. Enter again.")
-        except ValueError:
-            print(Fore.RED + "Invalid format. Please restart the app and try again.")
-        sys.exit()
+                year, month, day = map(int, birthdate.split("-"))
+                hour, minute = map(int, birthtime.split(":"))
+                country, city_region = country_capital_city.split("/")
+                break
+
+            except KeyboardInterrupt:
+                print(Fore.RED + "App interrupted. Enter again.")
+            except ValueError:
+                print(Fore.RED + "Invalid format. Please restart the app and try again.")
+                sys.exit()
 
         user = AppUser(
             name,
@@ -105,6 +109,8 @@ def main():
 
         print(Fore.YELLOW + "\nChart generated and saved.")
 
+    except KeyboardInterrupt:
+        print(Fore.RED + "\nApp interrupted. Please start again!")
     except QuitApp:
         print(Fore.WHITE + "\nGoodbye!")
         sys.exit()

@@ -8,6 +8,10 @@ In preparation for building this app, an analysis was conducted to compare astro
 
 From the list of relevant libraries - two were selected and compared (Kerykeion | Natal) with Kerykeion being a better fit for this application due to it's ability to input latitude, longitude and timezone, rather than needing to convert timezones manually.
 
+## Acknowledgments
+
+Some idea generation, library/licence comparisons, and guidance on document structure were provided by ChatGPT (GPT-4o, OpenAI, 2025).
+
 ## Installation & Requirements
 
 *Kerykeion* requires Python 3.9 or higher. *Figlet* requires Python 3.9 or higher. *Colorama* will work on a range of Python versions which includes 3.9/3.10.
@@ -60,9 +64,35 @@ pip install pyswisseph
 pip install pytz
 ```
 
+### - Standard Libraries -
+
+Both Sys and Datetime are standard python libraries and can be imported without pip installation.
+
 ## Basic Usage
 
+### - Sys -
+
+The usage of the sys library in this application is purely to exit the application when a 'QuitApp' exception has been raised:
+
+```py
+import sys
+sys.exit()
+```
+
+### - Datetime -
+
+The usage of the datetime library in this application is to validate the format of date and time values input by the user:
+
+```py
+from datetime import datetime
+def validate_date(date_str):
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    return dt.year, dt.month, dt.day
+```
+
 ### - Figlet -
+
+The usage of the pyfiglet library in this application is to add a font to the text in the application header:
 
 ```py
 from pyfiglet import Figlet
@@ -72,11 +102,14 @@ print(f.renderText('text to render'))
 
 ### - Colorama -
 
-Before use, you must initialise Colorama:
+The usage of the Colorama library in this application is to change the colour of the CLI text. Before use, you must initialise Colorama:
 
 ```py
 from colorama import init
 init(autoreset=True)
+
+print(Fore.WHITE + "Goodbye!")
+print(Fore.RED + error_message)
 ```
 
 ### - Kerykeion -
@@ -142,6 +175,12 @@ __Important: This project cannot gaurantee that Kerykeion has used the Pyswissep
 #### Use of Personal Information
 
 This application requests the use of personal information such as name, date of birth and location of birth. This information could be misused, stored inproperly or used for malicious purposes. Users need to be aware of the risk at the point of data entry - users should be provided the option of using an alias.
+
+#### Accuracy
+
+Accuracy of birth chart/natal chart data is dependent on libraries not created by the author. This application may provide output data that conflicts with other sources.
+
+ Astrological 'influence' on personal behaviour has not been scientifically proven - this application aims only to provide information regarding the positions of planets on the day of users birth.
 
 ## Author
 
