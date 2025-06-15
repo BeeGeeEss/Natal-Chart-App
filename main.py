@@ -46,7 +46,7 @@ def get_input(prompt):
 
 def main():
     """Function to set the font and colour of the app header"""  
-    try:  
+    try:
         figlet = Figlet(font='ogre')
         ascii_art = figlet.renderText("Natal Chart Generator *")
         print(Fore.MAGENTA + ascii_art + "______________________________________________________")
@@ -58,7 +58,7 @@ def main():
         birthtime = get_input("Enter your birthtime (HH:MM 24 hour time): ")
         latitude = float(get_input("Enter the latitude (e.g. -37.813629): "))
         longitude = float(get_input("Enter the longitude (e.g. 144.963058): "))
-        country_capital_city = get_input("Enter your timezone (Country/Capital City, e.g. Australia/Melbourne): ")
+        country_capital_city = get_input("Enter your timezone (Country/Capital City: ")
         city_region = get_input("Enter your birth town or city: ")
 
         try:
@@ -66,12 +66,24 @@ def main():
             hour, minute = map(int, birthtime.split(":"))
             country, city_region = country_capital_city.split("/")
         except KeyboardInterrupt:
-                print(Fore.RED + "App interrupted. Enter again.")
+            print(Fore.RED + "App interrupted. Enter again.")
         except ValueError:
-            print(Fore.RED + "Invalid date, time or coordinate format. Please restart the app and try again.")
+            print(Fore.RED + "Invalid format. Please restart the app and try again.")
         exit()
 
-        user = AppUser(name, year, month, day, hour, minute, latitude, longitude, country, city_region)
+        user = AppUser(
+            name,
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            latitude,
+            longitude,
+            country,
+            city_region
+        )
+
         user.format_birth_data()
 
         subject = AstrologicalSubject(
