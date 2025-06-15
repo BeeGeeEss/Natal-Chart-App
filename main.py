@@ -4,6 +4,7 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
     Refer to application documentation for further information.
 
 """
+import sys
 from colorama import init, Fore
 from pyfiglet import Figlet
 from kerykeion import AstrologicalSubject, KerykeionChartSVG, Report
@@ -69,7 +70,7 @@ def main():
             print(Fore.RED + "App interrupted. Enter again.")
         except ValueError:
             print(Fore.RED + "Invalid format. Please restart the app and try again.")
-        exit()
+        sys.exit()
 
         user = AppUser(
             name,
@@ -106,7 +107,7 @@ def main():
 
     except QuitApp:
         print(Fore.WHITE + "\nGoodbye!")
-        exit()
+        sys.exit()
 
 if __name__ == "__main__":
     main()
