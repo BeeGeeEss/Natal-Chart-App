@@ -6,6 +6,7 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
 """
 import sys
 from datetime import datetime
+import pytz
 from colorama import init, Fore
 from pyfiglet import Figlet
 from kerykeion import AstrologicalSubject, KerykeionChartSVG, Report
@@ -14,12 +15,24 @@ from kerykeion import AstrologicalSubject, KerykeionChartSVG, Report
 init(autoreset=True)
 
 class QuitApp(Exception):
-    """Custom exception to quit the app."""
-    print(None)
+    """Python class 'Exception' used to quit the app swiftly."""
 
 class AppUser:
-    """Class for App Users"""
-    def __init__(self, name, year, month, day, hour, minute, latitude, longitude, country, city):
+    """Class for the app users' birth data"""
+    def __init__(
+        self,
+        name,
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        latitude,
+        longitude,
+        timezone,
+        country,
+        city
+    ):
         self.name = name
         self.year = year
         self.month = month
@@ -28,6 +41,7 @@ class AppUser:
         self.minute = minute
         self.latitude = latitude
         self.longitude = longitude
+        self.timezone = timezone
         self.country = country
         self.city = city
 
@@ -36,7 +50,8 @@ class AppUser:
         print(f"Name: {self.name}")
         print(f"Date/Time: {self.year}-{self.month}-{self.day} {self.hour}:{self.minute}")
         print(f"Location: {self.latitude}, {self.longitude}")
-        print(f"Timezone: {self.country}/{self.city}")
+        print(f"Timezone: {self.timezone}")
+        #print(f"Timezone: {self.country}/{self.city}")
 
 def get_input(prompt):
     """Function to eliminate the need to write this prompt for each input"""
@@ -46,8 +61,38 @@ def get_input(prompt):
         raise QuitApp
     return value.strip()
 
+
+def get_validated_input(prompt, validator, error_message):
+    """Function to validate each input for correct formatting"""
+    while True:
+        value = get_input(prompt)
+        try:
+            return validator(value)
+        except ValueError as ve:
+            print(Fore.RED + f"{error_message} ({ve})")
+
+def validate_date(date_str):
+    """Function to align input with datetime library for formatting"""
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    return dt.year, dt.month, dt.day
+
+def validate_time(time_str):
+    """Function to align input with datetime library for formatting"""
+    tm = datetime.strptime(time_str, "%H:%M")
+    return tm.hour, tm.minute
+
+def validate_float(value_str):
+    """Function to ensure coordinate input is in decimal format"""
+    return float(value_str)
+
+def validate_timezone(tz_str):
+    """Function to align input with pytz library for timezone"""
+    if tz_str not in pytz.all_timezones:
+        raise ValueError("Invalid timezone")
+    return tz_str
+
 def main():
-    """Function to set the font and colour of the app header"""  
+    """Function to set the font and colour at the start of the app"""  
     try:
         figlet = Figlet(font='ogre')
         ascii_art = figlet.renderText("Natal Chart Generator *")
@@ -57,25 +102,63 @@ def main():
 
         while True:
             try:
-                name = get_input("Enter your name or alias: ").title()
-                birthdate = get_input("Enter your birthdate (YYYY-MM-DD): ")
-                birthtime = get_input("Enter your birthtime (HH:MM 24 hour time): ")
-                latitude = float(get_input("Enter the latitude (e.g. -37.813629): "))
-                longitude = float(get_input("Enter the longitude (e.g. 144.963058): "))
-                country_capital_city = get_input("Enter your timezone (Country/Capital City: ")
-                city_region = get_input("Enter your birth town/Country: ")
+                #The app input to collect birth data
+                # name = get_input("Enter your name or alias: ").title()
+                # birthdate = get_input("Enter your birthdate (YYYY-MM-DD): ")
+                # birthtime = get_input("Enter your birthtime (HH:MM 24 hour time): ")
+                # latitude = float(get_input("Enter the latitude (e.g. -37.813629): "))
+                # longitude = float(get_input("Enter the longitude (e.g. 144.963058): "))
+                # country_capital_city = get_input("Enter your timezone (Country/Capital City: ")
+                # city_region = get_input("Enter your birth town/Country: ")
 
-                year, month, day = map(int, birthdate.split("-"))
-                hour, minute = map(int, birthtime.split(":"))
-                country, city_region = country_capital_city.split("/")
+                name = get_input("Enter your name or alias: ").title()
+
+                year, month, day = get_validated_input(
+                    "Enter your birthdate (YYYY-MM-DD): ",
+                    validate_date,
+                    "Invalid date format! Please use YYYY-MM-DD."
+                )
+
+                hour, minute = get_validated_input(
+                "Enter your birthtime (HH:MM 24 hour time): ",
+                validate_time,
+                "Invalid time format! Please use HH:MM (24-hour)."
+                )
+
+                latitude = get_validated_input(
+                "Enter the latitude (e.g. -37.813629): ",
+                validate_float,
+                "Invalid latitude! Please enter a number like -37.813629."
+                )
+
+                longitude = get_validated_input(
+                "Enter the longitude (e.g. 144.963058): ",
+                validate_float,
+                "Invalid longitude! Please enter a number like 144.963058."
+                )
+
+                timezone = get_validated_input(
+                "Enter your timezone (e.g. Australia/Melbourne): ",
+                validate_timezone,
+                "Invalid timezone! Must match a real timezone like Australia/Melbourne."
+                )
+                country, city = timezone.split("/")
+
+                # #Formatting each input section
+                # year, month, day = map(int, birthdate.split("-"))
+                # hour, minute = map(int, birthtime.split(":"))
+                # country, city_region = country_capital_city.split("/")
                 break
 
             except KeyboardInterrupt:
+                #Message printed if user accidentally interrupts the app
                 print(Fore.RED + "App interrupted. Enter again.")
             except ValueError:
+                #Message printed if the user inputs data in an invalid format
                 print(Fore.RED + "Invalid format. Please restart the app and try again.")
                 sys.exit()
 
+        #Instance of the AppUser class
         user = AppUser(
             name,
             year,
@@ -85,29 +168,31 @@ def main():
             minute,
             latitude,
             longitude,
+            timezone,
             country,
-            city_region
+            city
         )
 
         user.format_birth_data()
 
-        subject = AstrologicalSubject(
+        user = AstrologicalSubject(
             name,
             year,
             month,
             day,
             hour,
             minute,
-            city_region,
+            city,
             country,
             longitude,
             latitude,
+            timezone,
         )
 
-        chart = KerykeionChartSVG(subject)
-        chart.makeSVG()
+        birth_chart_svg = KerykeionChartSVG(user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
+        birth_chart_svg.makeSVG()
 
-        print(Fore.YELLOW + "\nChart generated and saved.")
+        print(Fore.YELLOW + "\nChart generated and saved..")
 
     except KeyboardInterrupt:
         print(Fore.RED + "\nApp interrupted. Please start again!")
