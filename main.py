@@ -15,8 +15,12 @@ from kerykeion import AstrologicalSubject, KerykeionChartSVG, Report
 # Initialize colorama
 init(autoreset=True)
 
-class QuitApp(Exception):
-    """Python class 'Exception' used to quit the app swiftly."""
+class AppError(Exception):
+    """Class for app exceptions"""
+class InvalidTimeZoneError(AppError):
+    """Class for errors raised when user inputs incorrect timezone"""
+class InputCancelledError(AppError):
+    """Class for error that occurs when user inputs 'quit'"""
 
 class AppUser:
     """Class for the app users' birth data"""
@@ -55,10 +59,10 @@ class AppUser:
 
 def get_input(prompt):
     """Function to eliminate the need to write this prompt for each input"""
-    full_prompt = f"(Type 'quit' to exit)\n{prompt}"
+    full_prompt = f"(Type 'quit' to exit)\n{prompt}\n"
     value = input(Fore.CYAN + full_prompt)
     if value.strip().lower() == 'quit':
-        raise QuitApp
+        raise InputCancelledError("User chose to quit.")
     return value.strip()
 
 def get_validated_input(prompt, validator, error_message):
@@ -81,27 +85,23 @@ def validate_time(time_str):
     return tm.hour, tm.minute
 
 def validate_latitude(value_str):
-    """Function"""
+    """Function to ensure that the coordinates are formatted correctly"""
     val = float(value_str)
     if not -90 <= val <= 90:
         raise ValueError("Latitude must be between -90 and 90")
     return val
 
 def validate_longitude(value_str):
-    """Function"""
+    """Function to ensure that the coordinates are formatted correctly"""
     val = float(value_str)
     if not -180 <= val <= 180:
         raise ValueError("Longitude must be between -180 and 180")
     return val
 
-# def validate_float(value_str):
-#     """Function to ensure coordinate input is in decimal format"""
-#     return float(value_str)
-
 def validate_timezone(tz_str):
     """Function to align input with pytz library for timezone"""
     if tz_str not in pytz.all_timezones:
-        raise ValueError("Invalid timezone")
+        raise InvalidTimeZoneError("Timezone must match a real timezone like Australia/Melbourne.")
     return tz_str
 
 def main():
@@ -144,50 +144,42 @@ def main():
                 timezone = get_validated_input(
                 "Enter your timezone (e.g. Australia/Melbourne): ",
                 validate_timezone,
-                "Invalid timezone! Must match a real timezone like Australia/Melbourne."
+                "Must match a real timezone like Australia/Melbourne."
                 )
                 birth_city = get_input("Enter your birth city or town (e.g. Ballarat): ")
                 country = timezone.split("/")[0]
-                #country, tz_label = timezone.split("/")
-
-                print("Parameters to AstrologicalSubject:")
-                print(f"name: {name} ({type(name)})")
-                print(f"year: {year} ({type(year)})")
-                print(f"month: {month} ({type(month)})")
-                print(f"day: {day} ({type(day)})")
-                print(f"hour: {hour} ({type(hour)})")
-                print(f"minute: {minute} ({type(minute)})")
-                print(f"birth_city: {birth_city} ({type(birth_city)})")
-                print(f"longitude: {longitude} ({type(longitude)})")
-                print(f"latitude: {latitude} ({type(latitude)})")
-                print(f"timezone: {timezone} ({type(timezone)})")
                 break
 
-            except KeyboardInterrupt:
-                #Message printed if user accidentally interrupts the app
-                print(Fore.RED + "App interrupted. Enter again.")
             except ValueError as ve:
-                #Message printed if the user inputs data in an invalid format
-                print(Fore.RED + f"Invalid format {ve}. Please try again.")
+                print(Fore.RED + f"\nValidation error: {ve}")
+            except KeyboardInterrupt:
+                print(Fore.RED + "\nApp interrupted. Please start again!")
+            except InputCancelledError:
+                print(Fore.WHITE + "\nGoodbye!")
                 sys.exit()
+            except InvalidTimeZoneError as e:
+                print(Fore.RED + f"\nTimezone error: {e}")
+            except AppError as e:
+                print(Fore.RED + f"\nApplication error: {e}")
 
         #Instance of the AppUser class
         user_data = AppUser(
-            name,
-            year,
-            month,
-            day,
-            hour,
-            minute,
-            birth_city,
-            latitude,
-            longitude,
-            timezone,
-            country,
+            name=name,
+            year=year,
+            month=month,
+            day=day,
+            hour=hour,
+            minute=minute,
+            birth_city=birth_city,
+            latitude=latitude,
+            longitude=longitude,
+            timezone=timezone,
+            country=country
         )
 
         user_data.format_birth_data()
 
+        #Instance of the AstrologicalSubject class
         astro_user = AstrologicalSubject(
             name,
             year,
@@ -196,22 +188,33 @@ def main():
             hour,
             minute,
             birth_city,
-            latitude,
+            country,
             longitude,
+            latitude,
             timezone
         )
 
+        #Creating default path for SVG files
         output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
         os.makedirs(output_path, exist_ok=True)
 
+        #Generating SVG files
         birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
         birth_chart_svg.makeSVG()
-
         print(Fore.YELLOW + "\nChart generated and saved..")
+
+        #Generating Sun & Moon highlight
+        print(astro_user.sun)
+        print(astro_user.moon)
+
+        #Generating report
+        birth_report = AstrologicalSubject(astro_user)
+        birth_report = Report(astro_user)
+        birth_report.print_report()
 
     except KeyboardInterrupt:
         print(Fore.RED + "\nApp interrupted. Please start again!")
-    except QuitApp:
+    except InputCancelledError:
         print(Fore.WHITE + "\nGoodbye!")
         sys.exit()
 
