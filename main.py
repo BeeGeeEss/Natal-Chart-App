@@ -6,6 +6,7 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
 """
 import sys
 from datetime import datetime
+import os
 import pytz
 from colorama import init, Fore
 from pyfiglet import Figlet
@@ -27,11 +28,11 @@ class AppUser:
         day,
         hour,
         minute,
+        birth_city,
         latitude,
         longitude,
         timezone,
         country,
-        city
     ):
         self.name = name
         self.year = year
@@ -39,19 +40,18 @@ class AppUser:
         self.day = day
         self.hour = hour
         self.minute = minute
+        self.birth_city = birth_city
         self.latitude = latitude
         self.longitude = longitude
         self.timezone = timezone
         self.country = country
-        self.city = city
 
     def format_birth_data(self):
         """Function to format birth data"""
         print(f"Name: {self.name}")
-        print(f"Date/Time: {self.year}-{self.month}-{self.day} {self.hour}:{self.minute}")
-        print(f"Location: {self.latitude}, {self.longitude}")
+        print(f"Date/Time: {self.year}-{self.month:02}-{self.day:02} {self.hour:02}:{self.minute:02}")
+        print(f"Location: {self.birth_city} ({self.latitude}, {self.longitude})")
         print(f"Timezone: {self.timezone}")
-        #print(f"Timezone: {self.country}/{self.city}")
 
 def get_input(prompt):
     """Function to eliminate the need to write this prompt for each input"""
@@ -60,7 +60,6 @@ def get_input(prompt):
     if value.strip().lower() == 'quit':
         raise QuitApp
     return value.strip()
-
 
 def get_validated_input(prompt, validator, error_message):
     """Function to validate each input for correct formatting"""
@@ -81,9 +80,23 @@ def validate_time(time_str):
     tm = datetime.strptime(time_str, "%H:%M")
     return tm.hour, tm.minute
 
-def validate_float(value_str):
-    """Function to ensure coordinate input is in decimal format"""
-    return float(value_str)
+def validate_latitude(value_str):
+    """Function"""
+    val = float(value_str)
+    if not -90 <= val <= 90:
+        raise ValueError("Latitude must be between -90 and 90")
+    return val
+
+def validate_longitude(value_str):
+    """Function"""
+    val = float(value_str)
+    if not -180 <= val <= 180:
+        raise ValueError("Longitude must be between -180 and 180")
+    return val
+
+# def validate_float(value_str):
+#     """Function to ensure coordinate input is in decimal format"""
+#     return float(value_str)
 
 def validate_timezone(tz_str):
     """Function to align input with pytz library for timezone"""
@@ -102,15 +115,6 @@ def main():
 
         while True:
             try:
-                #The app input to collect birth data
-                # name = get_input("Enter your name or alias: ").title()
-                # birthdate = get_input("Enter your birthdate (YYYY-MM-DD): ")
-                # birthtime = get_input("Enter your birthtime (HH:MM 24 hour time): ")
-                # latitude = float(get_input("Enter the latitude (e.g. -37.813629): "))
-                # longitude = float(get_input("Enter the longitude (e.g. 144.963058): "))
-                # country_capital_city = get_input("Enter your timezone (Country/Capital City: ")
-                # city_region = get_input("Enter your birth town/Country: ")
-
                 name = get_input("Enter your name or alias: ").title()
 
                 year, month, day = get_validated_input(
@@ -126,14 +130,14 @@ def main():
                 )
 
                 latitude = get_validated_input(
-                "Enter the latitude (e.g. -37.813629): ",
-                validate_float,
+                "Enter the latitude of birth place (e.g. -37.813629): ",
+                validate_latitude,
                 "Invalid latitude! Please enter a number like -37.813629."
                 )
 
                 longitude = get_validated_input(
-                "Enter the longitude (e.g. 144.963058): ",
-                validate_float,
+                "Enter the longitude of birth place (e.g. 144.963058): ",
+                validate_longitude,
                 "Invalid longitude! Please enter a number like 144.963058."
                 )
 
@@ -142,54 +146,65 @@ def main():
                 validate_timezone,
                 "Invalid timezone! Must match a real timezone like Australia/Melbourne."
                 )
-                country, city = timezone.split("/")
+                birth_city = get_input("Enter your birth city or town (e.g. Ballarat): ")
+                country = timezone.split("/")[0]
+                #country, tz_label = timezone.split("/")
 
-                # #Formatting each input section
-                # year, month, day = map(int, birthdate.split("-"))
-                # hour, minute = map(int, birthtime.split(":"))
-                # country, city_region = country_capital_city.split("/")
+                print("Parameters to AstrologicalSubject:")
+                print(f"name: {name} ({type(name)})")
+                print(f"year: {year} ({type(year)})")
+                print(f"month: {month} ({type(month)})")
+                print(f"day: {day} ({type(day)})")
+                print(f"hour: {hour} ({type(hour)})")
+                print(f"minute: {minute} ({type(minute)})")
+                print(f"birth_city: {birth_city} ({type(birth_city)})")
+                print(f"longitude: {longitude} ({type(longitude)})")
+                print(f"latitude: {latitude} ({type(latitude)})")
+                print(f"timezone: {timezone} ({type(timezone)})")
                 break
 
             except KeyboardInterrupt:
                 #Message printed if user accidentally interrupts the app
                 print(Fore.RED + "App interrupted. Enter again.")
-            except ValueError:
+            except ValueError as ve:
                 #Message printed if the user inputs data in an invalid format
-                print(Fore.RED + "Invalid format. Please restart the app and try again.")
+                print(Fore.RED + f"Invalid format {ve}. Please try again.")
                 sys.exit()
 
         #Instance of the AppUser class
-        user = AppUser(
+        user_data = AppUser(
             name,
             year,
             month,
             day,
             hour,
             minute,
+            birth_city,
             latitude,
             longitude,
             timezone,
             country,
-            city
         )
 
-        user.format_birth_data()
+        user_data.format_birth_data()
 
-        user = AstrologicalSubject(
+        astro_user = AstrologicalSubject(
             name,
             year,
             month,
             day,
             hour,
             minute,
-            city,
-            country,
-            longitude,
+            birth_city,
             latitude,
-            timezone,
+            longitude,
+            timezone
         )
 
-        birth_chart_svg = KerykeionChartSVG(user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
+        output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
+        os.makedirs(output_path, exist_ok=True)
+
+        birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
         birth_chart_svg.makeSVG()
 
         print(Fore.YELLOW + "\nChart generated and saved..")
