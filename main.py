@@ -20,7 +20,7 @@ class AppError(Exception):
 class InvalidTimeZoneError(AppError):
     """Class for errors raised when user inputs incorrect timezone"""
 class InputCancelledError(AppError):
-    """Class for error that occurs when user inputs 'quit'"""
+    """Class for closing the application when user inputs 'quit'"""
 
 class AppUser:
     """Class for the app users' birth data"""
@@ -59,7 +59,7 @@ class AppUser:
 
 def get_input(prompt):
     """Function to eliminate the need to write this prompt for each input"""
-    full_prompt = f"(Type 'quit' to exit)\n{prompt}\n"
+    full_prompt = f"(Type 'quit' to exit)\n{prompt}"
     value = input(Fore.CYAN + full_prompt)
     if value.strip().lower() == 'quit':
         raise InputCancelledError("User chose to quit.")
@@ -86,6 +86,8 @@ def validate_time(time_str):
 
 def validate_latitude(value_str):
     """Function to ensure that the coordinates are formatted correctly"""
+    if '.' not in value_str:
+        raise ValueError("Latitude must include a decimal (e.g. -37.813629)")
     val = float(value_str)
     if not -90 <= val <= 90:
         raise ValueError("Latitude must be between -90 and 90")
@@ -93,6 +95,8 @@ def validate_latitude(value_str):
 
 def validate_longitude(value_str):
     """Function to ensure that the coordinates are formatted correctly"""
+    if '.' not in value_str:
+        raise ValueError("Latitude must include a decimal (e.g. -37.813629)")
     val = float(value_str)
     if not -180 <= val <= 180:
         raise ValueError("Longitude must be between -180 and 180")
@@ -101,7 +105,7 @@ def validate_longitude(value_str):
 def validate_timezone(tz_str):
     """Function to align input with pytz library for timezone"""
     if tz_str not in pytz.all_timezones:
-        raise InvalidTimeZoneError("Timezone must match a real timezone like Australia/Melbourne.")
+        raise ValueError("Timezone must match a real timezone like Australia/Melbourne.")
     return tz_str
 
 def main():
@@ -110,11 +114,15 @@ def main():
         figlet = Figlet(font='ogre')
         ascii_art = figlet.renderText("Natal Chart Generator *")
         print(Fore.MAGENTA + ascii_art + "______________________________________________________")
-        print(Fore.MAGENTA + "\n\nWARNING! Your information may be shared with 3rd parties")
-        print(Fore.MAGENTA + "\nWelcome, let's begin...\n")
+        print(Fore.MAGENTA + "\n\nWARNING! You are about to share sensitive information")
+        print(Fore.MAGENTA + "Your information may be shared with 3rd parties")
+        print(Fore.MAGENTA + "*Accuracy may vary")
+        print(Fore.MAGENTA + "______________________________________________________")
+        print(Fore.MAGENTA + "\n\nWelcome, let's begin...\n")
 
         while True:
             try:
+                #User inputs
                 name = get_input("Enter your name or alias: ").title()
 
                 year, month, day = get_validated_input(
@@ -142,7 +150,7 @@ def main():
                 )
 
                 timezone = get_validated_input(
-                "Enter your timezone (e.g. Australia/Melbourne): ",
+                "Enter your timezone of birth country & capital city (e.g. Australia/Melbourne): ",
                 validate_timezone,
                 "Must match a real timezone like Australia/Melbourne."
                 )
@@ -150,6 +158,7 @@ def main():
                 country = timezone.split("/")[0]
                 break
 
+            #Error handling
             except ValueError as ve:
                 print(Fore.RED + f"\nValidation error: {ve}")
             except KeyboardInterrupt:
@@ -194,7 +203,7 @@ def main():
             timezone
         )
 
-        #Creating default path for SVG files
+        #Ensuring path for folder to store SVG files exists
         output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
         os.makedirs(output_path, exist_ok=True)
 
@@ -203,11 +212,11 @@ def main():
         birth_chart_svg.makeSVG()
         print(Fore.YELLOW + "\nChart generated and saved..")
 
-        #Generating Sun & Moon highlight
+        #Generating Sun & Moon highlight in CLI
         print(astro_user.sun)
         print(astro_user.moon)
 
-        #Generating report
+        #Generating report to CLI
         birth_report = AstrologicalSubject(astro_user)
         birth_report = Report(astro_user)
         birth_report.print_report()
