@@ -16,6 +16,8 @@ Some idea generation, library/licence comparisons, and guidance on document stru
 
 *Kerykeion* requires Python 3.9 or higher. *Figlet* requires Python 3.9 or higher. *Colorama* will work on a range of Python versions which includes 3.9/3.10. *Pytz* requires Python 2.4 or higher. *OS*, *Datetime*, and *Sys* are standard libraries for Python.
 
+See [Requirements File](./requirements.txt).
+
 ### - Installation of Application -
 
 Clone (or fork, then clone) the below repository or open the folder, if a local copy has been provided:
@@ -129,6 +131,7 @@ print(Fore.RED + error_message)
 The usage of the Pytz library in this application is to support the Kerykeion classes, with accurate timezone information:
 
 ```py
+import pytz
 def validate_timezone(tz_str):
     if tz_str not in pytz.all_timezones:
         raise ValueError("Timezone must match a real timezone like Australia/Melbourne.")
@@ -137,21 +140,81 @@ def validate_timezone(tz_str):
 
 ### - Kerykeion -
 
+Basic usage for Kerykeion in this application is shown below:
+
+```py
+from kerykeion import AstrologicalSubject
+```
+
+AppUser class is instantiated in order to collect input data from users:
+
+![App User Class](./Media/appuser-class.png)
+
+User inputs are collected e.g.:
+
+![User Inputs](./Media/app-input.png)
+
+User inputs are formatted to meet the requirements of the Kerykeion library, using an instance of the AppUser class. Then we call the AstrologicalSubject class using the data input by the user:
+
+![User Data Instance of AppUser Class](./Media/astro-class.png)
+
 ## App Appearance
 
-When users run 'Python3 main.py' they see the application heading, they are presented with a brief warning, they are welcomed to the app - and they are asked their first question.
+When users run 'Python3 main.py':
+
+- The user sees the application heading
+- The user is presented with a brief warning
+- The user is welcomed to the app
+- The user is asked their first question
+- The user answers all questions until the chart/report is generated
 
 ![Welcome Screen](./Media/app_welcome_screen.png)
 
 ## SVG Generation
 
+Kerykeion supports chart generation into an SVG file.
+If you would like to generate the files to a specific folder, include "new_output_directory=" with your prefered file path as an argument for KerykeionChartSVG as below:
+
 ```py
+from kerykeion import AstrologicalSubject, KerykeionChartSVG
 birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/root/parentfolder/Natal-Chart-App/Generated_SVGs")
         birth_chart_svg.makeSVG()
         print(Fore.YELLOW + "\nChart generated and saved..")
 ```
 
-## Help or Troubleshooting
+If you prefer not to hard code a file path, the file will be saved to the root folder and you will use the below code instead:
+
+```py
+from kerykeion import AstrologicalSubject, KerykeionChartSVG
+birth_chart_svg = KerykeionChartSVG(astro_user)
+        birth_chart_svg.makeSVG()
+        print(Fore.YELLOW + "\nChart generated and saved..")
+```
+
+![SVG Birth Chart](./Generated_SVGs/Example%20-%20Natal%20Chart.svg)
+
+## Report Generation
+
+Kerykeion supports generation of birth reports and star sign summaries in the terminal:
+
+```py
+from kerykeion import AstrologicalSubject
+        print(astro_user.sun)
+        print(astro_user.moon)
+```
+
+![Birth Summaries](./Media/birth-summaries.png)
+
+```py
+from kerykeion import AstrologicalSubject, Report
+        birth_report = Report(astro_user)
+        birth_report.print_report()
+        print(Fore.YELLOW + "\nReports generated in the terminal!")
+```
+
+![Birth Report](./Media/example-report-1.png)
+
+![Birth Report](./Media/example-report-2.png)
 
 ## Project Structure
 

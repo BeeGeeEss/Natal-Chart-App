@@ -210,16 +210,16 @@ def main():
         #Generating SVG files
         birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
         birth_chart_svg.makeSVG()
-        print(Fore.YELLOW + "\nChart generated and saved..")
+        print(Fore.YELLOW + f"\nChart generated and saved at {output_path}!")
 
         #Generating Sun & Moon highlight in CLI
         print(astro_user.sun)
         print(astro_user.moon)
 
         #Generating report to CLI
-        birth_report = AstrologicalSubject(astro_user)
         birth_report = Report(astro_user)
         birth_report.print_report()
+        print(Fore.YELLOW + "\nReports generated in the terminal!")
 
     except KeyboardInterrupt:
         print(Fore.RED + "\nApp interrupted. Please start again!")
