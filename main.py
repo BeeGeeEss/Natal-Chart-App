@@ -214,7 +214,7 @@ def main():
 
         birth_chart_svg = KerykeionChartSVG(astro_user)
         birth_chart_svg.makeSVG()
-        print(Fore.YELLOW + f"\nChart generated!")
+        print(Fore.YELLOW + "\nChart generated!")
 
         #Generating Sun & Moon highlight in CLI
         print(astro_user.sun)
