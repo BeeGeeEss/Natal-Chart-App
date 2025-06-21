@@ -6,7 +6,7 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
 """
 import sys
 from datetime import datetime
-import os
+#import os
 import pytz
 from colorama import init, Fore
 from pyfiglet import Figlet
@@ -204,13 +204,17 @@ def main():
         )
 
         #Ensuring path for folder to store SVG files exists
-        output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
-        os.makedirs(output_path, exist_ok=True)
+        #output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
+        #os.makedirs(output_path, exist_ok=True)
 
         #Generating SVG files
-        birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
+        #birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
+        #birth_chart_svg.makeSVG()
+        #print(Fore.YELLOW + f"\nChart generated and saved at {output_path}!")
+
+        birth_chart_svg = KerykeionChartSVG(astro_user)
         birth_chart_svg.makeSVG()
-        print(Fore.YELLOW + f"\nChart generated and saved at {output_path}!")
+        print(Fore.YELLOW + f"\nChart generated!")
 
         #Generating Sun & Moon highlight in CLI
         print(astro_user.sun)
