@@ -203,15 +203,16 @@ def main():
             timezone
         )
 
-        #Ensuring path for folder to store SVG files exists
+        #Uncomment if using 'Generated SVGs' FOlder - Ensures path exists
         #output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
         #os.makedirs(output_path, exist_ok=True)
 
-        #Generating SVG files
+        #Uncomment and use this code if Generating SVG files to 'Generated SVGs' Folder
         #birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
         #birth_chart_svg.makeSVG()
         #print(Fore.YELLOW + f"\nChart generated and saved at {output_path}!")
 
+        #Use this code if generating SVGs to the root folder
         birth_chart_svg = KerykeionChartSVG(astro_user)
         birth_chart_svg.makeSVG()
         print(Fore.YELLOW + "\nChart generated!")
