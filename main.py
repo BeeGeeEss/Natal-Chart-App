@@ -6,6 +6,7 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
 """
 import sys
 import os
+import pytz
 from colorama import init, Fore
 from pyfiglet import Figlet
 from kerykeion import AstrologicalSubject, KerykeionChartSVG, Report
@@ -67,7 +68,7 @@ def get_input(prompt):
     full_prompt = f"(Type 'quit' to exit)\n{prompt}"
     value = input(Fore.CYAN + full_prompt)
     if value.strip().lower() == 'quit':
-        raise InputCancelledError("User chose to quit.")
+        raise InputCancelledError("Goodbye!")
     return value.strip()
 
 def get_validated_input(prompt, validator, error_message):
@@ -79,6 +80,29 @@ def get_validated_input(prompt, validator, error_message):
         except ValueError as ve:
             print(Fore.RED + f"{error_message} ({ve})")
 
+def prompt_timezone():
+    """Prompt the user for a timezone, list Australian options, or quit."""
+    while True:
+        print(Fore.CYAN + "Enter your timezone (e.g. Australia/Melbourne) or type 'list' to see Australian timezones.")
+        print(Fore.CYAN + "('quit' to exit.)")
+        user_input = input(Fore.CYAN + "> ").strip()
+
+        if user_input.lower() == "quit":
+            print(Fore.WHITE + "\nGoodbye!\n")
+            exit()
+
+        if user_input.lower() == "list":
+            print(Fore.CYAN + "\nAvailable Australian timezones:\n")
+            for tz in pytz.all_timezones:
+                if tz.startswith("Australia/"):
+                    print(Fore.CYAN + " -", tz)
+            print()
+            continue
+
+        try:
+            return validate_timezone(user_input)
+        except ValueError as e:
+            print(Fore.RED + f"Error: {e}\n")
 
 def main():
     """Function to set the font and colour at the start of the app"""  
@@ -121,11 +145,7 @@ def main():
                 "Invalid longitude! Please enter a number like 144.963058."
                 )
 
-                timezone = get_validated_input(
-                "Enter your timezone of birth country & capital city (e.g. Australia/Melbourne): ",
-                validate_timezone,
-                "Invalid timezone!"
-                )
+                timezone = prompt_timezone()
                 birth_city = get_input("Enter your birth city or town (e.g. Ballarat): ")
                 country = timezone.split("/")[0]
                 break
