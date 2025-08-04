@@ -2,7 +2,6 @@
 Validators for Natal Chart Application  
 
 """
-
 from datetime import datetime
 import difflib
 import pytz
@@ -29,7 +28,8 @@ def validate_latitude(value_str):
     try:
         val = float(value_str)
     except ValueError as exc:
-        raise ValueError("Latitude must be a valid number with a decimal (e.g. -37.813629)") from exc
+        raise ValueError("Latitude must be a valid number with a decimal "
+        "(e.g. -37.813629)") from exc
     if not -90 <= val <= 90:
         raise ValueError("Latitude must be between -90 and 90")
     return val

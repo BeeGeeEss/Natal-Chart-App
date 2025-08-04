@@ -59,8 +59,8 @@ class AppUser:
     def format_birth_data(self):
         """Function to format birth data"""
         print(Fore.MAGENTA + f"Name: {self.name}")
-        print(Fore.MAGENTA + f"Birth: {self.year}-{self.month:02}-{self.day:02} {self.hour:02}:{self.minute:02}")
-        print(Fore.MAGENTA + f"Location: {self.birth_city} ({self.latitude}, {self.longitude})")
+        print(Fore.MAGENTA + f"Birth Date & Time: {self.year}-{self.month:02}-{self.day:02} {self.hour:02}:{self.minute:02}")
+        print(Fore.MAGENTA + f"Birth Location: {self.birth_city} ({self.latitude}, {self.longitude})")
         print(Fore.MAGENTA + f"Timezone: {self.timezone}")
 
 def get_input(prompt):
@@ -115,7 +115,9 @@ def request_user_consent():
     print(Fore.MAGENTA + "_" * 75, "\n")
 
     while True:
-        consent = input(Fore.MAGENTA + "Do you accept these terms and wish to continue? (yes/no): ").strip().lower()
+        consent = input(Fore.MAGENTA +
+                        "Do you accept these terms and wish to continue?"
+                        " (yes/no): ").strip().lower()
         if consent == "yes":
             print(Fore.MAGENTA + "\nThank you\n")
             break
@@ -220,7 +222,8 @@ def main():
         #Uncomment and use this code if Generating SVG files to 'Generated Charts & Reports' Folder
         birth_chart_svg = KerykeionChartSVG(
             astro_user,
-            new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports"
+            new_output_directory=
+            "/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports"
             )
         birth_chart_svg.makeSVG()
         print(Fore.YELLOW + f"\nChart generated and saved at {output_path}/{name}!")
@@ -241,7 +244,8 @@ def main():
         print(Fore.YELLOW + "\nReport successfully generated!")
 
         # Ensure you remember to type yes if you would like to keep a copy
-        save_report = get_input(Fore.YELLOW + "Would you like to save the report? (yes/no): ").lower()
+        save_report = get_input(Fore.YELLOW + "Would you like to save the report?"
+        " (yes/no): ").lower()
         if save_report == "yes":
             with open(f"{output_path}/{name}_report.txt", "w", encoding="UTF-8") as f:
                 f.write(birth_report.get_full_report())
