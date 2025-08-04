@@ -6,7 +6,10 @@ Validators for Natal Chart Application
 from datetime import datetime
 import difflib
 import pytz
+from colorama import init, Fore
 
+# Initialize colorama
+init(autoreset=True)
 
 def validate_date(date_str):
     """Function to align input with datetime library for formatting"""
@@ -36,11 +39,6 @@ def validate_longitude(value_str):
         raise ValueError("Longitude must be between -180 and 180")
     return val
 
-# def validate_timezone(tz_str):
-#     """Function to align input with pytz library for timezone"""
-#     if tz_str not in pytz.all_timezones:
-#         raise ValueError("Timezone must match a real timezone like Australia/Melbourne.")
-#     return tz_str
 
 def validate_timezone(tz_str):
     """Validate a timezone input. Attempt fuzzy match if invalid."""
@@ -49,6 +47,6 @@ def validate_timezone(tz_str):
 
     matches = difflib.get_close_matches(tz_str, pytz.all_timezones, n=1, cutoff=0.6)
     if matches:
-        raise ValueError(f"Did you mean: {matches[0]}?")
+        raise ValueError(Fore.RED + f"Did you mean: {matches[0]}?")
     else:
-        raise ValueError("Timezone must match a real timezone like Australia/Melbourne.")
+        raise ValueError(Fore.RED + "Timezone must match a real timezone like Australia/Melbourne.")
