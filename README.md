@@ -88,7 +88,7 @@ If you decide to use the 'Generate_SVGs' folder, you need to hardcode the path o
 
 ```py
 import os
-output_path = "/root/parentfolder//Natal-Chart-App Generated_SVGs"
+output_path = "/root/parentfolder//Natal-Chart-App Generated_Charts_&_Reports"
         os.makedirs(output_path, exist_ok=True)
 
 ```
@@ -218,7 +218,31 @@ from kerykeion import AstrologicalSubject, Report
 
 ## Project Structure
 
-![File Paths](./Media/file-paths.png)
+├── Generated_Charts_&_Reports
+│   ├── Example - Natal Chart.svg
+│   └── Example_report.txt
+├── LICENSE
+├── Licenses
+│   ├── LICENCE-AGPL-PYSWISSEMPH.txt
+│   ├── LICENSE-AGPL-KERYKEION.txt
+│   ├── LICENSE-BSD-COLORAMA.txt
+│   └── LICENSE-MIT-PYFIGLET.txt
+├── Media
+│   ├── app-input.png
+│   ├── app_welcome_screen.png
+│   ├── appuser-class.png
+│   ├── astro-class.png
+│   ├── birth-summaries.png
+│   ├── example-report-1.png
+│   ├── example-report-2.png
+├── README.md
+├── Tests
+│   ├── __init__.py
+│   ├── test_app_user.py
+│   └── test_validators.py
+├── main.py
+├── requirements.txt
+└── validators.py
 
 ## Librabries & Licencing
 
