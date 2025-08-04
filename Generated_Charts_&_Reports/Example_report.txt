@@ -1,0 +1,47 @@
+
++- Kerykeion report for Example -+
++----------+-------+-----------------------+-----------+----------+
+| Date     | Time  | Location              | Longitude | Latitude |
++----------+-------+-----------------------+-----------+----------+
+| 7/2/1972 | 15:45 | Daylesford, Australia | 144.834   | 37.202   |
++----------+-------+-----------------------+-----------+----------+
++-----------------+------+-------+------+----------------+
+| Planet          | Sign | Pos.  | Ret. | House          |
++-----------------+------+-------+------+----------------+
+| Sun             | Aqu  | 17.51 | -    | Eighth_House   |
+| Moon            | Sco  | 14.58 | -    | Fifth_House    |
+| Mercury         | Aqu  | 10.15 | -    | Eighth_House   |
+| Venus           | Pis  | 26.15 | -    | Tenth_House    |
+| Mars            | Ari  | 27.76 | -    | Eleventh_House |
+| Jupiter         | Cap  | 0.07  | -    | Sixth_House    |
+| Saturn          | Tau  | 29.62 | -    | Eleventh_House |
+| Uranus          | Lib  | 18.22 | R    | Fourth_House   |
+| Neptune         | Sag  | 5.02  | -    | Fifth_House    |
+| Pluto           | Lib  | 1.74  | R    | Fourth_House   |
+| Mean_Node       | Aqu  | 4.66  | R    | Eighth_House   |
+| True_Node       | Aqu  | 5.15  | R    | Eighth_House   |
+| Mean_South_Node | Leo  | 4.66  | R    | Second_House   |
+| True_South_Node | Leo  | 5.15  | R    | Second_House   |
+| Chiron          | Ari  | 10.36 | -    | Tenth_House    |
+| Mean_Lilith     | Lib  | 28.09 | -    | Fifth_House    |
+| Ascendant       | Can  | 10.42 | -    | First_House    |
+| Descendant      | Cap  | 10.42 | -    | Seventh_House  |
+| Medium_Coeli    | Pis  | 21.84 | -    | Tenth_House    |
+| Imum_Coeli      | Vir  | 21.84 | -    | Fourth_House   |
++-----------------+------+-------+------+----------------+
++----------------+------+----------+
+| House          | Sign | Position |
++----------------+------+----------+
+| First_House    | Can  | 10.42    |
+| Second_House   | Leo  | 0.95     |
+| Third_House    | Leo  | 23.71    |
+| Fourth_House   | Vir  | 21.84    |
+| Fifth_House    | Lib  | 27.14    |
+| Sixth_House    | Sag  | 5.87     |
+| Seventh_House  | Cap  | 10.42    |
+| Eighth_House   | Aqu  | 0.95     |
+| Ninth_House    | Aqu  | 23.71    |
+| Tenth_House    | Pis  | 21.84    |
+| Eleventh_House | Ari  | 27.14    |
+| Twelfth_House  | Gem  | 5.87     |
++----------------+------+----------+

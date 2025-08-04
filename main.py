@@ -112,6 +112,7 @@ def request_user_consent():
     print(Fore.MAGENTA + "- Your information may be stored or shared with third parties")
     print(Fore.MAGENTA + "- Astrological interpretations are not scientifically verified")
     print(Fore.MAGENTA + "- By continuing, you acknowledge and accept these risks")
+    print(Fore.MAGENTA + "_" * 75, "\n")
 
     while True:
         consent = input(Fore.MAGENTA + "Do you accept these terms and wish to continue? (yes/no): ").strip().lower()
@@ -119,7 +120,7 @@ def request_user_consent():
             print(Fore.MAGENTA + "\nThank you\n")
             break
         elif consent == "no":
-            print(Fore.WHITE + "\nConsent not given. Exiting application. Good bye!\n")
+            print(Fore.WHITE + "\nUser does not wish to consent. Exiting application. Good bye!\n")
             sys.exit()
         else:
             print(Fore.RED + "Please type 'yes' or 'no'.")
@@ -129,9 +130,8 @@ def main():
     try:
         figlet = Figlet(font='ogre')
         ascii_art = figlet.renderText("Natal Chart Generator *")
-        print(Fore.MAGENTA + ascii_art + "______________________________________________________")
+        print(Fore.MAGENTA + ascii_art + "_" * 75)
         request_user_consent()
-        print(Fore.MAGENTA + "______________________________________________________")
         print(Fore.MAGENTA + "\n\nWelcome, let's begin...\n")
 
         while True:
@@ -213,33 +213,35 @@ def main():
             timezone
         )
 
-        #Uncomment if using 'Generated SVGs' FOlder - Ensures path exists
-        output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
+        #Uncomment if using 'Generated Charts & Reports' Folder - Ensures path exists
+        output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports"
         os.makedirs(output_path, exist_ok=True)
 
-        #Uncomment and use this code if Generating SVG files to 'Generated SVGs' Folder
+        #Uncomment and use this code if Generating SVG files to 'Generated Charts & Reports' Folder
         birth_chart_svg = KerykeionChartSVG(
             astro_user,
-            new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
+            new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports"
             )
         birth_chart_svg.makeSVG()
         print(Fore.YELLOW + f"\nChart generated and saved at {output_path}/{name}!")
 
-        # Use this code if generating SVGs to the root folder
+        # Only uncomment and use this code if generating SVGs to the root folder
         # birth_chart_svg = KerykeionChartSVG(astro_user)
         # birth_chart_svg.makeSVG()
         # print(Fore.YELLOW + "\nChart generated!")
 
-        #Generating Sun & Moon highlight in CLI
+        #Generating Sun & Moon horoscope in CLI
         print(astro_user.sun)
         print(astro_user.moon)
+        print(Fore.YELLOW + "\nMini horoscope successfully generated in the terminal!")
 
         #Generating report to CLI
         birth_report = Report(astro_user)
         birth_report.print_report()
-        print(Fore.YELLOW + "\nReports successfully generated in the terminal!")
+        print(Fore.YELLOW + "\nReport successfully generated!")
 
-        save_report = get_input("Would you like to save the report? (yes/no): ").lower()
+        # Ensure you remember to type yes if you would like to keep a copy
+        save_report = get_input(Fore.YELLOW + "Would you like to save the report? (yes/no): ").lower()
         if save_report == "yes":
             with open(f"{output_path}/{name}_report.txt", "w", encoding="UTF-8") as f:
                 f.write(birth_report.get_full_report())
