@@ -4,8 +4,15 @@ Natal Chart Generator - designed to provide Natal Chart data to users.
     Refer to application documentation for further information.
 
 """
+# ========================================
+# Natal Chart Generator - Main Application
+# ========================================
+
+# --- Standard Library Imports ---
 import sys
 import os
+
+# --- Third-Party Imports ---
 import pytz
 from colorama import init, Fore
 from pyfiglet import Figlet
@@ -18,15 +25,27 @@ from validators import (
     validate_timezone,
 )
 
+
+
+# --- Initialization ---
 # Initialize colorama
 init(autoreset=True)
 
-class AppError(Exception):
-    """Class for app exceptions"""
-class InvalidTimeZoneError(AppError):
+
+# -----------------------------
+# Custom Exception Definitions
+# -----------------------------
+
+
+class InvalidTimeZoneError(Exception):
     """Class for errors raised when user inputs incorrect timezone"""
-class InputCancelledError(AppError):
+class InputCancelledError(Exception):
     """Class for closing the application when user inputs 'quit'"""
+
+
+# -----------------------------
+# User Class Definition
+# -----------------------------
 
 class AppUser:
     """Class for the app users' birth data"""
@@ -56,12 +75,18 @@ class AppUser:
         self.timezone = timezone
         self.country = country
 
-    def format_birth_data(self):
+    def display_birth_data(self):
         """Function to format birth data"""
+        print(Fore.MAGENTA + "\n- Your Birth Data -")
         print(Fore.MAGENTA + f"Name: {self.name}")
         print(Fore.MAGENTA + f"Birth Date & Time: {self.year}-{self.month:02}-{self.day:02} {self.hour:02}:{self.minute:02}")
         print(Fore.MAGENTA + f"Birth Location: {self.birth_city} ({self.latitude}, {self.longitude})")
         print(Fore.MAGENTA + f"Timezone: {self.timezone}")
+
+
+# -----------------------------
+# Input Validation Functions
+# -----------------------------
 
 def get_input(prompt):
     """Function to eliminate the need to write this prompt for each input"""
@@ -90,7 +115,7 @@ def prompt_timezone():
 
         if user_input.lower() == "quit":
             print(Fore.WHITE + "\nGood bye!\n")
-            exit()
+            sys.exit()
 
         if user_input.lower() == "list":
             print(Fore.CYAN + "\nAvailable Australian timezones:\n")
@@ -117,15 +142,21 @@ def request_user_consent():
     while True:
         consent = input(Fore.MAGENTA +
                         "Do you accept these terms and wish to continue?"
-                        " (yes/no): ").strip().lower()
-        if consent == "yes":
+                        " (Yes/No): ")
+        if consent.lower() == "yes":
             print(Fore.MAGENTA + "\nThank you\n")
             break
-        elif consent == "no":
+        if consent.lower() == "no":
             print(Fore.WHITE + "\nUser does not wish to consent. Exiting application. Good bye!\n")
             sys.exit()
         else:
             print(Fore.RED + "Please type 'yes' or 'no'.")
+
+
+
+# -----------------------------
+# Main Application Logic
+# -----------------------------
 
 def main():
     """Function to set the font and colour at the start of the app"""  
@@ -180,8 +211,6 @@ def main():
                 sys.exit()
             except InvalidTimeZoneError as e:
                 print(Fore.RED + f"\nTimezone error: {e}")
-            except AppError as e:
-                print(Fore.RED + f"\nApplication error: {e}")
 
         #Instance of the AppUser class
         user_data = AppUser(
@@ -198,7 +227,7 @@ def main():
             country=country
         )
 
-        user_data.format_birth_data()
+        user_data.display_birth_data()
 
         #Instance of the AstrologicalSubject class
         astro_user = AstrologicalSubject(
@@ -216,40 +245,50 @@ def main():
         )
 
         #Uncomment if using 'Generated Charts & Reports' Folder - Ensures path exists
-        output_path = "/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports"
+        output_path = os.path.join(
+            os.path.expanduser("~"),
+            "GitHome",
+            "Natal-Chart-App",
+            "Generated_Charts_&_Reports"
+        )
         os.makedirs(output_path, exist_ok=True)
 
         #Uncomment and use this code if Generating SVG files to 'Generated Charts & Reports' Folder
         birth_chart_svg = KerykeionChartSVG(
             astro_user,
             new_output_directory=
-            "/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports"
-            )
+            "/home/beegeeess/GitHome/Natal-Chart-App/Generated_Charts_&_Reports")
+    
         birth_chart_svg.makeSVG()
-        print(Fore.YELLOW + f"\nChart generated and saved at {output_path}/{name}!")
 
         # Only uncomment and use this code if generating SVGs to the root folder
         # birth_chart_svg = KerykeionChartSVG(astro_user)
         # birth_chart_svg.makeSVG()
         # print(Fore.YELLOW + "\nChart generated!")
 
-        #Generating Sun & Moon horoscope in CLI
+        #Function to display Sun & Moon horoscope in terminal
+        print("\n")
+        print(Fore.YELLOW + "\nMini horoscope successfully generated in the terminal!")
         print(astro_user.sun)
         print(astro_user.moon)
-        print(Fore.YELLOW + "\nMini horoscope successfully generated in the terminal!")
 
-        #Generating report to CLI
+        #Function to generate a report in terminal
+        print(Fore.YELLOW + "\nReport successfully generated in the terminal!")
         birth_report = Report(astro_user)
         birth_report.print_report()
-        print(Fore.YELLOW + "\nReport successfully generated!")
 
-        # Ensure you remember to type yes if you would like to keep a copy
+        # Function to save the report to a file
         save_report = get_input(Fore.YELLOW + "Would you like to save the report?"
-        " (yes/no): ").lower()
-        if save_report == "yes":
+        " (Yes/No): ")
+        if save_report.lower() == "yes":
             with open(f"{output_path}/{name}_report.txt", "w", encoding="UTF-8") as f:
                 f.write(birth_report.get_full_report())
             print(Fore.YELLOW + f"Report saved! at {output_path}/{name}")
+        elif save_report.lower() == "no":
+            print(Fore.WHITE + "Report not saved. You can generate it again later. Good bye!")
+        else:
+            print(Fore.RED + "Invalid input. Please type 'yes' or 'no'.")
+            sys.exit() 
 
     except KeyboardInterrupt:
         print(Fore.RED + "\nApp interrupted. Please start again!")
@@ -257,5 +296,6 @@ def main():
         print(Fore.WHITE + "\nGoodbye!")
         sys.exit()
 
+# --- Script Entry Point ---
 if __name__ == "__main__":
     main()
