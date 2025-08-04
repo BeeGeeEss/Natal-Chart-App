@@ -105,15 +105,32 @@ def prompt_timezone():
         except ValueError as e:
             print(Fore.RED + f"Error: {e}\n")
 
+def request_user_consent():
+    """In order to ensure user is aware of the risks of using this application"""
+    print(Fore.MAGENTA + "\n⚠️  WARNING: Sensitive Information Disclosure:")
+    print(Fore.MAGENTA + "- This application collects birth data to generate astrological charts")
+    print(Fore.MAGENTA + "- Your information may be stored or shared with third parties")
+    print(Fore.MAGENTA + "- Astrological interpretations are not scientifically verified")
+    print(Fore.MAGENTA + "- By continuing, you acknowledge and accept these risks")
+
+    while True:
+        consent = input(Fore.MAGENTA + "Do you accept these terms and wish to continue? (yes/no): ").strip().lower()
+        if consent == "yes":
+            print(Fore.MAGENTA + "\nThank you\n")
+            break
+        elif consent == "no":
+            print(Fore.WHITE + "\nConsent not given. Exiting application. Good bye!\n")
+            sys.exit()
+        else:
+            print(Fore.RED + "Please type 'yes' or 'no'.")
+
 def main():
     """Function to set the font and colour at the start of the app"""  
     try:
         figlet = Figlet(font='ogre')
         ascii_art = figlet.renderText("Natal Chart Generator *")
         print(Fore.MAGENTA + ascii_art + "______________________________________________________")
-        print(Fore.MAGENTA + "\n\nWARNING! You are about to share sensitive information")
-        print(Fore.MAGENTA + "Your information may be shared with 3rd parties")
-        print(Fore.MAGENTA + "*Accuracy may vary")
+        request_user_consent()
         print(Fore.MAGENTA + "______________________________________________________")
         print(Fore.MAGENTA + "\n\nWelcome, let's begin...\n")
 
