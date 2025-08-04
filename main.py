@@ -124,7 +124,7 @@ def main():
                 timezone = get_validated_input(
                 "Enter your timezone of birth country & capital city (e.g. Australia/Melbourne): ",
                 validate_timezone,
-                "Must match a real timezone like Australia/Melbourne."
+                "Invalid timezone!"
                 )
                 birth_city = get_input("Enter your birth city or town (e.g. Ballarat): ")
                 country = timezone.split("/")[0]
@@ -184,10 +184,10 @@ def main():
         birth_chart_svg.makeSVG()
         print(Fore.YELLOW + f"\nChart generated and saved at {output_path}!")
 
-        #Use this code if generating SVGs to the root folder
-        birth_chart_svg = KerykeionChartSVG(astro_user)
-        birth_chart_svg.makeSVG()
-        print(Fore.YELLOW + "\nChart generated!")
+        # Use this code if generating SVGs to the root folder
+        # birth_chart_svg = KerykeionChartSVG(astro_user)
+        # birth_chart_svg.makeSVG()
+        # print(Fore.YELLOW + "\nChart generated!")
 
         #Generating Sun & Moon highlight in CLI
         print(astro_user.sun)
