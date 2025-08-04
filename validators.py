@@ -2,25 +2,32 @@
 Validators for Natal Chart Application  
 
 """
+
 from datetime import datetime
 import difflib
 import pytz
 
 
 def validate_date(date_str):
-    """Function to align input with datetime library for formatting"""
-    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    """Validate and parse a date string in YYYY-MM-DD format"""
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("Invalid date format! Please use YYYY-MM-DD.") from exc
     return dt.year, dt.month, dt.day
 
 
 def validate_time(time_str):
-    """Function to align input with datetime library for formatting"""
-    tm = datetime.strptime(time_str, "%H:%M")
+    """Validate and parse a time string in HH:MM (24-hour) format"""
+    try:
+        tm = datetime.strptime(time_str, "%H:%M")
+    except ValueError as exc:
+        raise ValueError("Invalid time format! Please use HH:MM (24-hour).") from exc
     return tm.hour, tm.minute
 
 
 def validate_latitude(value_str):
-    """Validate that the latitude is a float between -90 and 90, includes decimal."""
+    """Validate that the latitude is a float between -90 and 90, and includes a decimal"""
     if not value_str or not isinstance(value_str, str):
         raise ValueError("Latitude input must not be empty.")
     if '.' not in value_str:
@@ -36,7 +43,7 @@ def validate_latitude(value_str):
 
 
 def validate_longitude(value_str):
-    """Validate that the longitude is a float between -180 and 180, includes decimal."""
+    """Validate that the longitude is a float between -180 and 180, and includes a decimal"""
     if not value_str or not isinstance(value_str, str):
         raise ValueError("Longitude input must not be empty")
     if '.' not in value_str:
@@ -51,7 +58,7 @@ def validate_longitude(value_str):
 
 
 def validate_timezone(tz_str):
-    """Validate a timezone input. Attempt fuzzy match if invalid."""
+    """Validate a timezone input, offering suggestions for close matches if invalid"""
     if tz_str in pytz.all_timezones:
         return tz_str
 
