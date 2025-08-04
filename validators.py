@@ -13,25 +13,38 @@ def validate_date(date_str):
     dt = datetime.strptime(date_str, "%Y-%m-%d")
     return dt.year, dt.month, dt.day
 
+
 def validate_time(time_str):
     """Function to align input with datetime library for formatting"""
     tm = datetime.strptime(time_str, "%H:%M")
     return tm.hour, tm.minute
 
+
 def validate_latitude(value_str):
-    """Function to ensure that the coordinates are formatted correctly"""
+    """Validate that the latitude is a float between -90 and 90, includes decimal."""
+    if not value_str or not isinstance(value_str, str):
+        raise ValueError("Latitude input must not be empty.")
     if '.' not in value_str:
         raise ValueError("Latitude must include a decimal (e.g. -37.813629)")
-    val = float(value_str)
+    try:
+        val = float(value_str)
+    except ValueError as exc:
+        raise ValueError("Latitude must be a valid number with a decimal (e.g. -37.813629)") from exc
     if not -90 <= val <= 90:
         raise ValueError("Latitude must be between -90 and 90")
     return val
 
+
 def validate_longitude(value_str):
-    """Function to ensure that the coordinates are formatted correctly"""
+    """Validate that the longitude is a float between -180 and 180, includes decimal."""
+    if not value_str or not isinstance(value_str, str):
+        raise ValueError("Longitude input must not be empty")
     if '.' not in value_str:
-        raise ValueError("Latitude must include a decimal (e.g. -37.813629)")
-    val = float(value_str)
+        raise ValueError("Longitude must include a decimal (e.g. 144.9631)")
+    try:
+        val = float(value_str)
+    except ValueError as exc:
+        raise ValueError("Longitude must be a valid number with a decimal (e.g. 144.9631)") from exc
     if not -180 <= val <= 180:
         raise ValueError("Longitude must be between -180 and 180")
     return val
