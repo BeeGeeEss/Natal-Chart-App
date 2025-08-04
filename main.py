@@ -58,17 +58,17 @@ class AppUser:
 
     def format_birth_data(self):
         """Function to format birth data"""
-        print(f"Name: {self.name}")
-        print(f"Date/Time: {self.year}-{self.month:02}-{self.day:02} {self.hour:02}:{self.minute:02}")
-        print(f"Location: {self.birth_city} ({self.latitude}, {self.longitude})")
-        print(f"Timezone: {self.timezone}")
+        print(Fore.MAGENTA + f"Name: {self.name}")
+        print(Fore.MAGENTA + f"Birth: {self.year}-{self.month:02}-{self.day:02} {self.hour:02}:{self.minute:02}")
+        print(Fore.MAGENTA + f"Location: {self.birth_city} ({self.latitude}, {self.longitude})")
+        print(Fore.MAGENTA + f"Timezone: {self.timezone}")
 
 def get_input(prompt):
     """Function to eliminate the need to write this prompt for each input"""
     full_prompt = f"(Type 'quit' to exit)\n{prompt}"
     value = input(Fore.CYAN + full_prompt)
     if value.strip().lower() == 'quit':
-        raise InputCancelledError("Goodbye!")
+        raise InputCancelledError("Good bye!")
     return value.strip()
 
 def get_validated_input(prompt, validator, error_message):
@@ -83,12 +83,13 @@ def get_validated_input(prompt, validator, error_message):
 def prompt_timezone():
     """Prompt the user for a timezone, list Australian options, or quit."""
     while True:
-        print(Fore.CYAN + "Enter your timezone (e.g. Australia/Melbourne) or type 'list' to see Australian timezones.")
+        print(Fore.CYAN + "Enter your timezone (e.g. Australia/Melbourne) or "
+        "type 'list' to see Australian timezones.")
         print(Fore.CYAN + "('quit' to exit.)")
         user_input = input(Fore.CYAN + "> ").strip()
 
         if user_input.lower() == "quit":
-            print(Fore.WHITE + "\nGoodbye!\n")
+            print(Fore.WHITE + "\nGood bye!\n")
             exit()
 
         if user_input.lower() == "list":
@@ -200,9 +201,12 @@ def main():
         os.makedirs(output_path, exist_ok=True)
 
         #Uncomment and use this code if Generating SVG files to 'Generated SVGs' Folder
-        birth_chart_svg = KerykeionChartSVG(astro_user, new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs")
+        birth_chart_svg = KerykeionChartSVG(
+            astro_user,
+            new_output_directory="/home/beegeeess/GitHome/Natal-Chart-App/Generated_SVGs"
+            )
         birth_chart_svg.makeSVG()
-        print(Fore.YELLOW + f"\nChart generated and saved at {output_path}!")
+        print(Fore.YELLOW + f"\nChart generated and saved at {output_path}/{name}!")
 
         # Use this code if generating SVGs to the root folder
         # birth_chart_svg = KerykeionChartSVG(astro_user)
@@ -216,7 +220,13 @@ def main():
         #Generating report to CLI
         birth_report = Report(astro_user)
         birth_report.print_report()
-        print(Fore.YELLOW + "\nReports generated in the terminal!")
+        print(Fore.YELLOW + "\nReports successfully generated in the terminal!")
+
+        save_report = get_input("Would you like to save the report? (yes/no): ").lower()
+        if save_report == "yes":
+            with open(f"{output_path}/{name}_report.txt", "w", encoding="UTF-8") as f:
+                f.write(birth_report.get_full_report())
+            print(Fore.YELLOW + f"Report saved! at {output_path}/{name}")
 
     except KeyboardInterrupt:
         print(Fore.RED + "\nApp interrupted. Please start again!")
