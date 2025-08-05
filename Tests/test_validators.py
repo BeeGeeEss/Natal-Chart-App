@@ -83,9 +83,9 @@ def test_validate_latitude_missing_decimal():
 
 
 
-# -------------------------------
-# Unit Tests for Longitude Validation
-# -------------------------------
+# # -------------------------------
+# # Unit Tests for Longitude Validation
+# # -------------------------------
 
 def test_validate_longitude_valid():
     """Accepts a valid longitude value"""

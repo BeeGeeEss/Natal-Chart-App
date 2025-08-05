@@ -10,7 +10,7 @@ Unit Testing for UserApp Class for Natal Chart Application
 # --- Imports ---
 import re
 
-# --- Third-Party Imports ---
+# # --- Third-Party Imports ---
 import pytest
 from main import AppUser
 
@@ -46,6 +46,6 @@ def test_app_user_format_birth_data(capsys):
     assert "Birth Location: Ballarat (-37.5, 143.8)" in clean_output
     assert "Timezone: Australia/Melbourne" in clean_output
 
-# --- Script Entry Point ---
+# # --- Script Entry Point ---
 if __name__ == "__main__":
     pytest.main()
