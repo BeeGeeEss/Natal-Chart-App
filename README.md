@@ -218,31 +218,27 @@ from kerykeion import AstrologicalSubject, Report
 
 ## Project Structure
 
-├── Generated_Charts_&_Reports
-│   ├── Example - Natal Chart.svg
-│   └── Example_report.txt
-├── LICENSE
-├── Licenses
-│   ├── LICENCE-AGPL-PYSWISSEMPH.txt
-│   ├── LICENSE-AGPL-KERYKEION.txt
-│   ├── LICENSE-BSD-COLORAMA.txt
-│   └── LICENSE-MIT-PYFIGLET.txt
-├── Media
-│   ├── app-input.png
-│   ├── app_welcome_screen.png
-│   ├── appuser-class.png
-│   ├── astro-class.png
-│   ├── birth-summaries.png
-│   ├── example-report-1.png
-│   ├── example-report-2.png
-├── README.md
-├── Tests
-│   ├── __init__.py
-│   ├── test_app_user.py
-│   └── test_validators.py
-├── main.py
-├── requirements.txt
-└── validators.py
+```
+📁 Natal-Chart-App
+    📁 Generated_Charts_&_Reports
+        ─ Example - Natal Chart.svg
+        ─ Example_report.txt
+    📁 Licenses
+        ─ LICENCE-AGPL-PYSWISSEMPH.txt
+        ─ LICENSE-AGPL-KERYKEION.txt
+        ─ LICENSE-BSD-COLORAMA.txt
+        ─ LICENSE-MIT-PYFIGLET.txt
+    📁 Media
+    📁 Tests
+        ─ __init__.py
+        ─ test_app_user.py
+        ─ test_validators.py
+    ─ LICENSE
+    ─ main.py
+    ─ README.md
+    ─ requirements.txt
+    ─ validators.py
+```
 
 ## Librabries & Licencing
 
